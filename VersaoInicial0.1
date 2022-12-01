@@ -25,8 +25,14 @@ typedef struct no {
   struct no *prox;
 } No;
 
+
+
 Tveiculo * new_carro() {
   Tveiculo *newcarro = new (Tveiculo);
+
+  cout << "Digite a placa do veículo. Ex: HJA9065\n";
+  cin >> newcarro->placa;
+
   cout << "Digite o modelo do veículo. Ex: KA\n";
   cin >> newcarro->modelo;
 
@@ -68,6 +74,37 @@ Tveiculo * new_carro() {
   return newcarro;
 }
 
+No *insere_veiculo(No **lista) {
+  No *novo = new (No);
+  novo->veiculo = new_carro();
+  novo->prox = *lista;
+  *lista = novo;
+  return novo;
+}
+
+No *remove_veiculo(No **lista, string placa) {
+
+  
+  No *aux = *lista;
+  No *remover;
+
+  if ((*lista)->veiculo->placa == placa) {
+    remover = *lista;
+    *lista = remover->prox;
+  } else {
+    aux = *lista;
+    while (aux->prox != NULL && aux->prox->veiculo->placa != placa) {
+      aux = aux->prox;
+    }
+
+    if (aux->prox) {
+      remover = aux->prox;
+      aux->prox = remover->prox;
+    }
+  }
+  return remover;
+}
+
 void printarq(No *lista) {
 
   ofstream out;
@@ -84,56 +121,13 @@ void printarq(No *lista) {
   }
 }
 
-No *insere_veiculo(No **lista) {
-  No *novo = new (No);
-  novo->veiculo = new_carro();
-  novo->prox = *lista;
-  *lista = novo;
-  return novo;
-}
-
-
-No *busca_veiculo(No *lista, string placa) {
-
-  if (lista) {
-    while (lista->prox != NULL) {
-      if (lista->veiculo->placa == placa) {
-      }
-      lista = lista->prox;
-    }
-  }
-  return lista;
-}
-
-
-No *remove_veiculo(No **lista, string placa) {
-  No *aux = *lista;
-  No *remover;
-
-  if ((*lista)->veiculo->placa == placa) {
-    remover = *lista;
-    *lista = remover->prox;
-  } else {
-    aux = *lista;
-    while (aux->prox != NULL && aux->veiculo->placa != placa) {
-      aux = aux->prox;
-    }
-
-    if (aux->prox) {
-      remover = aux->prox;
-      aux->prox = remover->prox;
-    }
-  }
-  return remover;
-}
-
-
 void insere_do_txt(No **lista, Tveiculo *novoveiculo) {
   No *novo = new (No);
   novo->veiculo = novoveiculo;
   novo->prox = *lista;
   *lista = novo;
 }
+
 
 int main() {
   No *lista = NULL;
@@ -144,29 +138,14 @@ int main() {
   char resposta;
   No *buscado;
   No *removido;
-  ifstream myfile("BD_veiculos_2.txt");
+  
 
-  if (myfile.is_open()) {
-    while (!myfile.eof()) {
-      Tveiculo *novoveiculo = new (Tveiculo);
-      myfile >> novoveiculo->modelo;
-      myfile >> novoveiculo->marca;
-      myfile >> novoveiculo->tipo;
-      myfile >> novoveiculo->ano;
-      myfile >> novoveiculo->km;
-      myfile >> novoveiculo->potencia;
-      myfile >> novoveiculo->combustivel;
-      myfile >> novoveiculo->cambio;
-      myfile >> novoveiculo->direcao;
-      myfile >> novoveiculo->cor;
-      myfile >> novoveiculo->portas;
-      myfile >> novoveiculo->placa;
-      myfile >> novoveiculo->valor;
-      insere_do_txt(&lista, novoveiculo);
-    }
-    myfile.close();
-  }
 
+
+
+  
+
+  
   while (newop != 6) {
     cout << "[1] Incluir novo veículo." << endl;
     cout << "[2] Busca por placa e remoção." << endl;
@@ -188,27 +167,9 @@ int main() {
 
       cout << "\nInsira a placa:" << endl;
       cin >> placa;
-      buscado = busca_veiculo(lista, placa);
-
-      cout << buscado->veiculo->modelo << " " << buscado->veiculo->placa;
-
-      if (buscado != NULL) {
-        cout << "Deseja remover esse veiculo?\n";
-        while (resposta != 's' | resposta != 'S' | resposta != 'n' |
-               resposta != 'N') {
-          cout << "\n\t\tOpção inválida.\n\n";
-          cin >> resposta;
-        }
-
-        if (resposta == 's' | resposta == 'S' | resposta == 'n' |
-            resposta == 'N') {
+    
           removido = remove_veiculo(&lista, placa);
-          cout << "Veiculo removido: ";
-          cout << removido->veiculo->modelo << " " << buscado->veiculo->placa
-               << "\n";
-        } else {
-          cout << "Não existe carro com esta placa.\n";
-        }
+         
 
         break;
 
@@ -230,10 +191,8 @@ int main() {
         break;
 
       case 6:
-
-        printarq(lista);
         cout << "Programa finalizado." << endl;
-
+        printarq(lista);
         return 0;
 
         break;
@@ -243,6 +202,7 @@ int main() {
       }
     }
   }
-}
+
+
 
 
