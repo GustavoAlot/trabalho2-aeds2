@@ -210,7 +210,6 @@ while (newop != 6) {
     break;
 
   case 5:
-    aux = lista;
     while (aux) {
       cout << aux->veiculo->modelo << endl;
       aux = aux->prox;
