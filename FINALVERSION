@@ -88,10 +88,10 @@ Tveiculo *new_carro(string placa) {
   cout << "Digite quantas portas há no veículo. Ex: 4\n";
   cin >> newcarro->portas;
 
-  cout << "Digite o valor do veículo. Ex: 00000.00\n" << endl;
+  cout << "Digite o valor do veículo. Ex: 00000.00\n";
   cin >> newcarro->valor;
 
-  cout << "  Veículo inserido." << endl;
+  cout << "  Veículo inserido.\n" << endl;
 
   return newcarro;
 }
@@ -233,6 +233,12 @@ void ordenacao(No *lista, No **ordenado) {
   }
 }
 
+/*
+ * Função para empilhar(inserir na pilha) os carros.
+ * @param pilha, a pilha de carros que já foram empilhados.
+ * @param aux, nó para o carro a ser inserido.
+ * @return novo, o nó do veículo que foi empilhado (inserido na pilha).
+ */
 No *empilhar(No *pilha, No *aux) {
   No *novo = new (No);
   novo->prox = pilha;
@@ -240,6 +246,10 @@ No *empilhar(No *pilha, No *aux) {
   return novo;
 }
 
+/*
+ * Função para desempiplhar(retirar da pilha) o carro.
+ * @param pilha, pilha dos carros.
+ */
 void desempilha(No **pilha) {
   if (*pilha != NULL) {
     No *remover = *pilha;
@@ -247,6 +257,11 @@ void desempilha(No **pilha) {
   }
 }
 
+/*
+ * Função para inserir no fim da fila.
+ * @param fila, a fila ligada.
+ * @param aux, nó a ser inserido na fila.
+ */
 void insereFim(No **fila, No *aux) {
   No *auxfila;
   No *novo = new (No);
@@ -264,6 +279,11 @@ void insereFim(No **fila, No *aux) {
   }
 }
 
+/**
+ * Função para remover o carro do inicio.
+ * @param fila, a fila ligada.
+ * @return nó do carro removido.
+ */
 No *removeInicio(No **fila) {
   No *remover = NULL;
 
@@ -326,13 +346,14 @@ int main() {
   /*
    * Escrita do menu na tela.
    */
-  while (newop != 6) {
+  while (newop != 7) {
     cout << "[1] Incluir novo veículo." << endl;
     cout << "[2] Busca por placa e remoção." << endl;
-    cout << "[3] Construir Lista" << endl;
+    cout << "[3] Construir fila." << endl;
     cout << "[4] Ordenação por placa." << endl;
-    cout << "[5] Construir pilha" << endl;
-    cout << "[6] Sair do programa." << endl;
+    cout << "[5] Construir pilha." << endl;
+    cout << "[6] Relatório." << endl;
+    cout << "[7] Sair do programa." << endl;
     cout << "Insira a opção desejada:" << endl;
     aux = lista;
 
@@ -343,7 +364,7 @@ int main() {
      */
     switch (newop) {
     case 1:
-      cout << "Digite a placa do veículo. Ex: HJA9065\n" << endl;
+      cout << "Digite a placa do veículo. Ex: HJA9065" << endl;
       cin >> placa;
 
       buscado = buscar(lista, placa);
@@ -352,100 +373,109 @@ int main() {
       } else {
         insere_veiculo(&lista, placa);
       }
-
       break;
 
     case 2:
-
-      cout << "\nInsira a placa:" << endl;
+      cout << "Insira a placa:" << endl;
       cin >> placa;
       buscado = buscar(lista, placa);
 
       if (buscado) {
+        cout << "Veículo encontrado." << endl;
         cout << "Deseja remover o veículo? [S]=sim ou [N]=não" << endl;
         cin >> resposta;
         if (resposta == 'S' || resposta == 's') {
           removido = remove_veiculo(&lista, placa);
           cout << "Veículo removido\n" << endl;
         } else {
-          cout << "Veículo  não removido do BD." << endl;
+          cout << "Veículo não removido do BD." << endl;
         }
       } else {
         cout << "Veículo não existente no BD." << endl;
       }
-
       break;
 
     case 3:
-      cout << "Construção da fila ." << endl;
+      cout << "Construção da fila.\n" << endl;
       while (aux) {
         if (aux->veiculo->cambio == "Automático") {
           insereFim(&fila, aux);
 
         } else {
           removido = removeInicio(&fila);
-            if (removido) {
-            free(removido);
-          }
         }
         aux = aux->prox;
       }
-
+      cout << "Final da fila" << endl;
       while (fila) {
-        cout << fila->veiculo->modelo;
-        cout << "\n ";
+        cout << fila->veiculo->modelo << " " << fila->veiculo->placa;
+        cout << "\n";
         fila = fila->prox;
       }
-
+      cout << "Início da fila" << endl;
+      cout << "\n";
       break;
 
     case 4:
 
-      cout << "\nOrdenação por placa.\n";
+      cout << "Ordenação por placa.\n";
       ordenacao(lista, &ordenado);
       cout << "\n";
-
       break;
 
     case 5:
-      cout << "Construindo pilha .\n";
+      cout << "Construção da pilha.\n";
       while (aux) {
         if (aux->veiculo->direcao == "Hidráulica") {
           pilha = empilhar(pilha, aux);
-        } else if (aux->veiculo->direcao == "Elétrica") {
+        } else {
           desempilha(&pilha);
         }
         aux = aux->prox;
       }
-
+      cout << "Topo da pilha" << endl;
       while (pilha) {
-        cout << pilha->veiculo->modelo;
-        cout << "\n ";
+        cout << pilha->veiculo->modelo << " " << pilha->veiculo->placa;
+        cout << "\n";
         pilha = pilha->prox;
       }
-
+      cout << "Base da pilha" << endl;
+      cout << "\n";
       break;
 
     case 6:
+      aux = lista;
+      while (aux) {
+        cout << aux->veiculo->modelo << " " << aux->veiculo->marca << " "
+             << aux->veiculo->tipo << " " << aux->veiculo->ano << " "
+             << aux->veiculo->km << " " << aux->veiculo->potencia << " "
+             << aux->veiculo->combustivel << " " << aux->veiculo->cambio << " "
+             << aux->veiculo->direcao << " " << aux->veiculo->cor << " "
+             << aux->veiculo->portas << " " << aux->veiculo->placa << " "
+             << aux->veiculo->valor << " " << endl;
+        aux = aux->prox;
+      }
+      break;
+
+    case 7:
       cout << "Programa finalizado." << endl;
       printarq(lista);
-      while(lista){
-        No * deletando = lista;
+
+      while (lista) {
+        No *deletando = lista;
         lista = lista->prox;
         free(deletando);
       }
-      while(fila){
-        No * deletando = fila;
+      while (fila) {
+        No *deletando = fila;
         fila = fila->prox;
         free(deletando);
       }
-      while(pilha){
-        No * deletando = pilha;
+      while (pilha) {
+        No *deletando = pilha;
         pilha = pilha->prox;
         free(deletando);
       }
-      
-      
       return 0;
 
       break;
